@@ -1,9 +1,10 @@
 package com.kafka.demo.kafka_producer.producer;
 
-import com.kafka.demo.kafka_producer.event.ProductCreatedEvent;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import avro.generated.ProductCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,4 +42,5 @@ public class ProductEventProducer {
     System.out.println(result.getRecordMetadata());
     System.out.println("arda");
   }
+
 }

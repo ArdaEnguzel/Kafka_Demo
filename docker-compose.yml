@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  kafka-1:
+    container_name: kafka-node-1
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_KRAFT_CLUSTER_ID=KlvFN9sURkyo1k1n0CbqnQ
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node-1:9091,2@kafka-node-2:9091,3@kafka-node-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9091,EXTERNAL://0.0.0.0:19092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-node-1:9092,EXTERNAL://localhost:19092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    volumes:
+      - /Users/ardaenguzel/kafka/docker-compose/volumes/server-1:/bitnami/kafka
+    networks:
+      - kafka-net
+
+  kafka-2:
+    container_name: kafka-node-2
+    image: bitnami/kafka:latest
+    ports:
+      - "9094:9094"
+      - "19094:19094"
+    environment:
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_KRAFT_CLUSTER_ID=KlvFN9sURkyo1k1n0CbqnQ
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node-1:9091,2@kafka-node-2:9091,3@kafka-node-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094,CONTROLLER://0.0.0.0:9091,EXTERNAL://0.0.0.0:19094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-node-2:9094,EXTERNAL://localhost:19094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    volumes:
+      - /Users/ardaenguzel/kafka/docker-compose/volumes/server-2:/bitnami/kafka
+    networks:
+      - kafka-net
+
+  kafka-3:
+    container_name: kafka-node-3
+    image: bitnami/kafka:latest
+    ports:
+      - "9096:9096"
+      - "19096:19096"
+    environment:
+      - KAFKA_CFG_NODE_ID=3
+      - KAFKA_KRAFT_CLUSTER_ID=KlvFN9sURkyo1k1n0CbqnQ
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node-1:9091,2@kafka-node-2:9091,3@kafka-node-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9096,CONTROLLER://0.0.0.0:9091,EXTERNAL://0.0.0.0:19096
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-node-3:9096,EXTERNAL://localhost:19096
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    volumes:
+      - /Users/ardaenguzel/kafka/docker-compose/volumes/server-3:/bitnami/kafka
+    networks:
+      - kafka-net
+
+  schema-registry:
+    container_name: schema-registry
+    image: confluentinc/cp-schema-registry:latest
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    ports:
+      - "7055:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-node-1:9092,PLAINTEXT://kafka-node-2:9094,PLAINTEXT://kafka-node-3:9096
+      SCHEMA_REGISTRY_DEBUG: "true"
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge

@@ -22,7 +22,7 @@ public class ProductController {
   @PostMapping
   public ResponseEntity<String> createProduct(
       @Valid @RequestBody CreateProductRequest createProductRequest) throws ExecutionException, InterruptedException {
-    productService.createSyncProduct(createProductRequest);
+    productService.createAvroProduct(createProductRequest);
     return ResponseEntity.ok("test");
   }
 }

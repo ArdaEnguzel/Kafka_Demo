@@ -1,6 +1,7 @@
 package com.kafka.demo.kafka_producer.service;
 
-import com.kafka.demo.kafka_producer.event.ProductCreatedEvent;
+import avro.generated.ProductCreatedEvent;
+import com.kafka.demo.kafka_producer.producer.ProductCreatedEventAvroProducer;
 import com.kafka.demo.kafka_producer.producer.ProductEventProducer;
 import com.kafka.demo.kafka_producer.request.CreateProductRequest;
 import java.util.UUID;
@@ -14,28 +15,17 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
   private final ProductEventProducer productEventProducer;
+  private final ProductCreatedEventAvroProducer productCreatedEventAvroProducer;
 
-  public String createAsyncProduct(CreateProductRequest createProductRequest) {
-    String productId = UUID.randomUUID().toString();
-    ProductCreatedEvent productCreatedEvent =
-        new ProductCreatedEvent(
-            productId,
-            createProductRequest.getName(),
-            createProductRequest.getPrice(),
-            createProductRequest.getQuantity());
-    this.productEventProducer.sendAsyncProductCreatedEvent(productCreatedEvent);
-    return null;
-  }
-
-  public String createSyncProduct(CreateProductRequest createProductRequest) throws ExecutionException, InterruptedException {
+  public String createAvroProduct(CreateProductRequest createProductRequest) throws ExecutionException, InterruptedException {
     String productId = UUID.randomUUID().toString();
     ProductCreatedEvent productCreatedEvent =
             new ProductCreatedEvent(
                     productId,
                     createProductRequest.getName(),
-                    createProductRequest.getPrice(),
+                    createProductRequest.getPrice().floatValue(),
                     createProductRequest.getQuantity());
-    this.productEventProducer.sendSyncProductCreatedEvent(productCreatedEvent);
+    this.productCreatedEventAvroProducer.sendAvroProductCreatedEvent(productCreatedEvent);
     return null;
   }
 }

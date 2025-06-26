@@ -3,10 +3,10 @@ package com.kafka.demo.kafka_producer.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kafka.demo.kafka_producer.event.ProductCreatedEvent;
+import avro.generated.ProductCreatedEvent;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaConfig {
 
-  @Value("${spring.kafka.producer.bootstrap-server}")
+  @Value("${spring.kafka.producer.bootstrap-servers}")
   private String bootstrapServers;
 
   @Value("${spring.kafka.producer.key-serializer}")
@@ -44,10 +44,11 @@ public class KafkaConfig {
 
     config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
-    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
+    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
     config.put(ProducerConfig.ACKS_CONFIG, ack);
     config.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
     config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+    config.put("schema.registry.url", "http://localhost:7055");
     //config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
 
     return config;
@@ -59,9 +60,10 @@ public class KafkaConfig {
   }
 
   @Bean
-  KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate() {
+  KafkaTemplate<String, ProductCreatedEvent> kafkaProductCreatedTemplate() {
     return new KafkaTemplate<String, ProductCreatedEvent>(producerFactory());
   }
+
 
   @Bean
   NewTopic createTopic() {

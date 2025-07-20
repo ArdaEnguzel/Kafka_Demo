@@ -4,7 +4,7 @@ package com.kafka.demo.kafka_producer.producer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import avro.generated.ProductCreatedEvent;
+import com.kafka.demo.avro.generated.ProductCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -3,7 +3,7 @@ package com.kafka.demo.kafka_producer.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import avro.generated.ProductCreatedEvent;
+import com.kafka.demo.avro.generated.ProductCreatedEvent;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -49,7 +49,7 @@ public class KafkaConfig {
     config.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
     config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
     config.put("schema.registry.url", "http://localhost:7055");
-    //config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
+    config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
 
     return config;
   }

@@ -1,6 +1,6 @@
 package com.kafka.demo.kafka_producer.service;
 
-import avro.generated.ProductCreatedEvent;
+import com.kafka.demo.avro.generated.ProductCreatedEvent;
 import com.kafka.demo.kafka_producer.producer.ProductCreatedEventAvroProducer;
 import com.kafka.demo.kafka_producer.producer.ProductEventProducer;
 import com.kafka.demo.kafka_producer.request.CreateProductRequest;
